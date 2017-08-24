@@ -1,0 +1,77 @@
+> 修改database.php文件 
+
+```
+'system_hub' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'nas.sonma.net'),
+            'port' => env('DB_PORT', '3308'),
+            'database' => 'system_hub',
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+        'company' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'nas.sonma.net'),
+            'port' => env('DB_PORT', '3308'),
+            'database' => 'company_000001',
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ]
+```
+
+>.env 文件
+```
+APP_ENV=local
+APP_DEBUG=true
+APP_KEY=
+APP_TIMEZONE=UTC
+
+DB_CONNECTION=system_hub
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=company
+DB_USERNAME=root
+DB_PASSWORD=
+
+CACHE_DRIVER=redis
+QUEUE_DRIVER=sync
+
+
+API_VERSION=v1
+API_NAME=buyer-lumen
+# 后缀，和域名应该只有一个
+# 打开后访问xxx.com/api/foos
+API_PREFIX=api
+
+```
+
+>切换存储数据库
+```
+  DB::reconnect('company');
+  $connections = DB::getConnections();
+  $this->assertEquals('company_000001', $connections['company']->getDatabaseName(), 'Initial reconnect works since it the default');
+
+  DB::purge('company');
+  config(['database.connections.company.database'=>'company_000002']);
+  DB::reconnect('company');
+  $connections = DB::getConnections();
+  $this->assertEquals('company_000002', $connections['company']->getDatabaseName(), 'The actual reconnect to another db fails');
+
+  DB::purge('company');
+  config(['database.connections.company.database'=>'company_000001']);
+  DB::reconnect('company');
+  $connections = DB::getConnections();
+  $this->assertEquals('company_000001', $connections['company']->getDatabaseName(), 'If purged, it works');
+```
