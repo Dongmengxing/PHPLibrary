@@ -19,5 +19,4 @@ Validator::extend('phone_number', function($attribute, $value, $parameters)
 'phone' => 'required|numeric|phone_number|size:11'
 
 正则表达式
-'phone' => 'required|regex:/(01)[0-9]{9}/'
 ```
