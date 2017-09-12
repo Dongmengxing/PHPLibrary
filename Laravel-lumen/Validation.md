@@ -1,6 +1,9 @@
 >unique
 ```
-'name' => 'required|min:1|unique:versions,name,NULL,id,deleted_at,NULL'
+'name' => 'required|min:1|unique:versions,name,NULL,id,deleted_at,NULL' // 忽略软删除
+
+'name' => 'string|unique:warehouses,name,'.$id.',id,deleted_at,NULL'  // 更新时忽略软删除以及当前的id
+
 ```
 >in
 ```
